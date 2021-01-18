@@ -36,7 +36,7 @@ public class Broker {
     Map<String, ConcurrentLinkedQueue> queueMap = new HashMap<>();
 
     public boolean send(String topic, String content) {
-        log.info("receive message : " + content + " from topic : " + topic);
+//        log.info("receive message : " + content + " from topic : " + topic);
 
         if(!queueMap.containsKey(topic)) {
             queueMap.put(topic, new ConcurrentLinkedQueue());
@@ -48,7 +48,7 @@ public class Broker {
     }
 
     public List<String> poll(String topic) {
-        log.info("poll data to : " + topic);
+//        log.info("poll data to : " + topic);
 
         ConcurrentLinkedQueue queue = queueMap.get(topic);
 

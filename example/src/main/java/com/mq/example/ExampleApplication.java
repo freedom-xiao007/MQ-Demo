@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Slf4j
 public class ExampleApplication {
 
     private static Producer producer = new Producer();
@@ -21,34 +20,43 @@ public class ExampleApplication {
     private static Consumer consumer = new Consumer();
 
     public static void main(String[] args) throws InterruptedException {
-        startMQProducer();
-
-        startMQConsumer();
+        int messageAmount = 1000;
+        startMQProducer(messageAmount);
+        startMQConsumer(messageAmount);
     }
 
-    private static void startMQConsumer() {
+    private static void startMQConsumer(int messageAmount) {
         Map<String, Object> properties = new HashMap<>(1);
         properties.put("url", "http://localhost:8080");
         consumer.setProperties(properties);
-
-        log.info("start consumer");
         String topic = "testTopic";
-        List messages = consumer.poll(topic);
-        for (Object object : messages) {
-            System.out.println(object.toString());
+        int amount = messageAmount;
+
+        System.out.println("Start consumer test");
+        long start = System.currentTimeMillis();
+
+        while (amount > 0) {
+           amount -= consumer.poll(topic).size();
         }
+
+        System.out.println("Consumer " + messageAmount + " messages spend time : " + (System.currentTimeMillis() - start) + " " +
+                "ms");
     }
 
-    private static void startMQProducer() throws InterruptedException {
+    private static void startMQProducer(int messageAmount) {
         Map<String, Object> properties = new HashMap<>(1);
         properties.put("url", "http://localhost:8080");
         producer.setProperties(properties);
-
-        log.info("start producer");
         String topic = "testTopic";
-        for(int i = 0; i < 10; i++) {
+
+        System.out.println("start producer test");
+        long start = System.currentTimeMillis();
+
+        for(int i = 0; i < messageAmount; i++) {
             producer.send(topic, String.valueOf(i));
-            log.info("send :" + i);
         }
+
+        System.out.println("Producer " + messageAmount + " messages spend time : " +
+                (System.currentTimeMillis() - start) + " ms ");
     }
 }
