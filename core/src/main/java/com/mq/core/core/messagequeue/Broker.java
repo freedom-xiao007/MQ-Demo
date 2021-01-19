@@ -20,10 +20,7 @@ package com.mq.core.core.messagequeue;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -47,7 +44,7 @@ public class Broker {
         return true;
     }
 
-    public List<String> poll(String topic) {
+    public List<String> poll(String topic, int rate) {
 //        log.info("poll data to : " + topic);
 
         ConcurrentLinkedQueue queue = queueMap.get(topic);
@@ -57,8 +54,10 @@ public class Broker {
             return messages;
         }
 
-        while (!queue.isEmpty()) {
-            messages.add(queue.poll().toString());
+        log.info("queue message amount : " + queue.size());
+        while (!queue.isEmpty() || rate > 0) {
+            messages.add(Objects.requireNonNull(queue.poll()).toString());
+            rate -= 1;
         }
 
         return messages;

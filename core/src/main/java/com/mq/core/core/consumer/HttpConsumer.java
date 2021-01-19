@@ -15,12 +15,31 @@
  * limitations under the License.
  */
 
-package com.mq.core.core.producer;
+package com.mq.core.core.consumer;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author lw1243925457
  */
-public interface Producer {
+public class HttpConsumer implements Consumer {
 
-    void send(String topic, String message);
+    private final RestTemplate restTemplate = new RestTemplate();
+
+    private Map<String, Object> properties;
+
+    public HttpConsumer(Map<String, Object> properties) {
+        this.properties = properties;
+    }
+
+    @Override
+    public List poll(String topic, int rate) {
+        String brokerUrl = properties.get("url").toString() + "/poll?topic=" + topic + "&rate=" + rate;
+        ResponseEntity<List> response = restTemplate.getForEntity(brokerUrl, List.class);
+        return response.getBody();
+    }
 }

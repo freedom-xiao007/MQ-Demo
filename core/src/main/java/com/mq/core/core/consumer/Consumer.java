@@ -17,28 +17,13 @@
 
 package com.mq.core.core.consumer;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestTemplate;
-
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author lw1243925457
  */
-public class Consumer {
+public interface Consumer {
 
-    private final RestTemplate restTemplate = new RestTemplate();
+    List poll(String topic, int rate);
 
-    private Map<String, Object> properties;
-
-    public void setProperties(Map<String, Object> properties) {
-        this.properties = properties;
-    }
-
-    public List poll(String topic) {
-        String brokerUrl = properties.get("url").toString() + "/poll?topic=" + topic;
-        ResponseEntity<List> response = restTemplate.getForEntity(brokerUrl, List.class);
-        return response.getBody();
-    }
 }

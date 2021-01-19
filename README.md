@@ -30,6 +30,7 @@
   
 &ensp;&ensp;&ensp;&ensp;目前使用HTTP作为通信方式
 
+#### v1.0 HTTP
 使用队列： ConcurrentLinkedQueue
 性能测试：
 
@@ -38,6 +39,30 @@ Producer 1000 messages spend time : 15324 ms
  
 Start consumer test
 Consumer 1000 messages spend time : 19 ms
+
+jdk.internal.misc.Unsafe.park[native] 占用94%的运行时间
+看着像是网络通信的
+感觉HTTP没有长连接，每次都是新的
+
+#### v1.1 websocket
+测试下面有并发问题，后面需要排除改进
+producer use websocket
+consumer use http
+
+```text
+start producer test
+Producer 1000 messages spend time : 86 ms 
+Start consumer test
+Consumer 1000 messages spend time : 177 ms
+```
+
+```text
+start producer test
+start producer test
+Producer 100000 messages spend time : 408 ms 
+Start consumer test
+Consumer 100000 messages spend time : 167 ms
+```
 
 ### 第二个版本：自定义 Queue
 - [ ] 2、去掉内存Queue，设计自定义Queue，实现消息确认和消费offset
@@ -69,3 +94,7 @@ Consumer 1000 messages spend time : 19 ms
     - [ ] 4）对接Spring
     - [ ] 5）对接Camel或Spring Integration
     - [ ] 6）优化内存和磁盘的使用
+    
+    
+## 参考链接
+- [SpringBoot+WebSocket实现服务端、客户端](https://my.oschina.net/u/4504531/blog/4557921)

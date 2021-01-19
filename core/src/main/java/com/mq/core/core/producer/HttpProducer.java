@@ -15,36 +15,35 @@
  * limitations under the License.
  */
 
-package com.mq.core.core.controller;
+package com.mq.core.core.producer;
 
-import com.mq.core.core.messagequeue.Broker;
 import com.mq.core.core.messagequeue.Message;
-import org.springframework.web.bind.annotation.*;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
 
-import java.util.List;
+import java.util.Map;
 
 /**
- * 基于Spring web（HTTP）的API接口
- *
  * @author lw1243925457
  */
-@RestController
-public class MQController {
+@Slf4j
+public class HttpProducer implements Producer {
 
-    private final Broker broker;
+    private final RestTemplate restTemplate = new RestTemplate();
 
-    public MQController(Broker broker) {
-        this.broker = broker;
+    private Map<String, Object> properties;
+
+    public HttpProducer(Map<String, Object> properties) {
+        this.properties = properties;
     }
 
-    @PostMapping("/send")
-    public boolean send(@RequestBody Message message) {
-        return broker.send(message.getTopic(), message.getContent());
-    }
-
-    @GetMapping("/poll")
-    public List poll(@RequestParam(value = "topic")String topic,
-                     @RequestParam(value = "rate")Integer rate) {
-        return broker.poll(topic, rate);
+    @Override
+    public void send(String topic, String message) {
+        String brokerUrl = properties.get("url").toString() + "/send";
+        HttpEntity<Message> request = new HttpEntity<>(new Message(topic, message));
+        ResponseEntity<Boolean> response = restTemplate.postForEntity(brokerUrl, request, Boolean.class);
+        log.info("send response : " + response);
     }
 }
