@@ -91,10 +91,15 @@ Consumer 100000 messages spend time : 167 ms
     
 #### 测试记录
 ##### 2.1 自定义Queue：悲观读写锁
+- producer use websocket
+- consumer use http
+
+```text
 start producer test
 Producer 100000 messages spend time : 477 ms 
 Start consumer test
 Consumer 100000 messages spend time : 420 ms
+```
 
 ### 第三个版本：基于 SpringMVC 实现 MQServer
 - [ ] 3、拆分broker和client(包括producer和consumer)
