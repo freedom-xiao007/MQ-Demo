@@ -44,7 +44,8 @@ public class MQController {
 
     @GetMapping("/poll")
     public List poll(@RequestParam(value = "topic")String topic,
-                     @RequestParam(value = "rate")Integer rate) {
-        return broker.poll(topic, rate);
+                     @RequestParam(value = "rate")Integer rate,
+                     @RequestParam(value = "group")String group) {
+        return broker.poll(topic, group, rate);
     }
 }

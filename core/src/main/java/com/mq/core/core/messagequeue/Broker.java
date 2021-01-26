@@ -22,7 +22,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * @author lw1243925457
@@ -31,23 +30,16 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 @Slf4j
 public class Broker {
 
-    Map<String, CustomQueue> queueMap = new HashMap<>();
+    private Map<String, CustomQueue> queueMap = new HashMap<>();
 
     public boolean send(String topic, String content) {
-//        log.info("receive message : " + content + " from topic : " + topic);
-
-        if(!queueMap.containsKey(topic)) {
-            queueMap.put(topic, new CustomQueue());
-        }
-
-        queueMap.get(topic).put(content);
-
+        CustomQueue queue = queueMap.getOrDefault(topic, new CustomQueue());
+        queue.put(content);
+        queueMap.put(topic, queue);
         return true;
     }
 
-    public List<String> poll(String topic, int rate) {
-//        log.info("poll data to : " + topic);
-
+    public List<String> poll(String topic, String group, int rate) {
         CustomQueue queue = queueMap.get(topic);
 
         List<String> messages = new ArrayList<>();
@@ -57,7 +49,7 @@ public class Broker {
 
         log.info("queue message amount : " + queue.size());
         while (!queue.isEmpty() || rate > 0) {
-            String message = queue.get();
+            String message = queue.get(group);
             if (message == null) {
                 break;
             }

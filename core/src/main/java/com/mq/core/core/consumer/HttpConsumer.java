@@ -17,6 +17,7 @@
 
 package com.mq.core.core.consumer;
 
+import com.mq.core.core.common.Constants;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
@@ -37,8 +38,11 @@ public class HttpConsumer implements Consumer {
     }
 
     @Override
-    public List poll(String topic, int rate) {
-        String brokerUrl = properties.get("url").toString() + "/poll?topic=" + topic + "&rate=" + rate;
+    public List poll(int rate) {
+        String topic = properties.get(Constants.TOPIC).toString();
+        String group = properties.get(Constants.GROUP).toString();
+        String url = properties.get(Constants.URL).toString();
+        String brokerUrl = url + "/poll?topic=" + topic + "&rate=" + rate + "&group=" + group;
         ResponseEntity<List> response = restTemplate.getForEntity(brokerUrl, List.class);
         return response.getBody();
     }

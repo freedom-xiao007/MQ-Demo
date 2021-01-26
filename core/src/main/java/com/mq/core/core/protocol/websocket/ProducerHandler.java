@@ -21,7 +21,6 @@ import com.google.gson.Gson;
 import com.mq.core.core.messagequeue.Broker;
 import org.springframework.web.socket.*;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -29,7 +28,6 @@ import java.util.Map;
  */
 public class ProducerHandler implements WebSocketHandler {
 
-    private static Map<WebSocketSession, Map> clients = new HashMap<>();
     private final Broker broker;
     private Gson gson = new Gson();
 
@@ -38,27 +36,21 @@ public class ProducerHandler implements WebSocketHandler {
     }
 
     @Override
-    public void afterConnectionEstablished(WebSocketSession webSocketSession) throws Exception {
-        clients.put(webSocketSession, new HashMap(0));
+    public void afterConnectionEstablished(WebSocketSession webSocketSession) {
     }
 
     @Override
-    public void handleMessage(WebSocketSession webSocketSession, WebSocketMessage<?> webSocketMessage) throws Exception {
-//        System.out.println(webSocketMessage.getPayload().toString());
+    public void handleMessage(WebSocketSession webSocketSession, WebSocketMessage<?> webSocketMessage) {
         Map map = gson.fromJson(webSocketMessage.getPayload().toString(), Map.class);
         broker.send(map.get("topic").toString(), map.get("message").toString());
     }
 
     @Override
-    public void handleTransportError(WebSocketSession webSocketSession, Throwable throwable) throws Exception {
-        clients.remove(webSocketSession);
-        webSocketSession.sendMessage(new TextMessage(throwable.toString()));
+    public void handleTransportError(WebSocketSession webSocketSession, Throwable throwable) {
     }
 
     @Override
-    public void afterConnectionClosed(WebSocketSession webSocketSession, CloseStatus closeStatus) throws Exception {
-        clients.remove(webSocketSession);
-        webSocketSession.sendMessage(new TextMessage("Close connect"));
+    public void afterConnectionClosed(WebSocketSession webSocketSession, CloseStatus closeStatus) {
     }
 
     @Override

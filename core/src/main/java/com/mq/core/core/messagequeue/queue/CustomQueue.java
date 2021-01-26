@@ -17,6 +17,8 @@
 
 package com.mq.core.core.messagequeue.queue;
 
+import com.mq.core.core.common.Constants;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -45,36 +47,21 @@ public class CustomQueue {
      */
     private List<String> queue = new ArrayList<>();
 
-    private final String defaultGroup = "default";
-
-    private final String writeLock = "WRITE_LOCK";
-
-    private final String readLock = "READ_LOCK";
-
-    public boolean put(String message) {
+    public void put(String message) {
         // TODO
         // 为啥函数锁没有用？
-        synchronized (writeLock) {
+        synchronized (Constants.WRITE_LOCK) {
             queue.add(message);
             writeIndex += 1;
-            return true;
         }
     }
 
     public String get(String group) {
-        synchronized (readLock) {
-            return queue.get(offset.computeIfAbsent(group, k -> new AtomicInteger(-1)).incrementAndGet());
+        int index = offset.getOrDefault(group, new AtomicInteger(-1)).incrementAndGet();
+        if (writeIndex == 0 || index >= queue.size()) {
+            return null;
         }
-    }
-
-    synchronized public String get() {
-        synchronized (readLock) {
-            int index = offset.getOrDefault(defaultGroup, new AtomicInteger(-1)).incrementAndGet();
-            if (writeIndex == 0 || index >= queue.size()) {
-                return null;
-            }
-            return queue.get(index);
-        }
+        return queue.get(index);
     }
 
     public boolean isEmpty() {

@@ -15,21 +15,18 @@
  * limitations under the License.
  */
 
-package com.mq.core.core.consumer;
-
-import java.util.List;
+package com.mq.core.core.common;
 
 /**
  * @author lw1243925457
  */
-public interface Consumer {
+public class Constants {
 
-    /**
-     * 获取数据
-     * 返回之多最大值 rate 的数据量
-     * @param rate 最大数据量
-     * @return data list
-     */
-    List poll(int rate);
+    public static final String TOPIC = "topic";
 
+    public static final String GROUP = "group";
+
+    public static final String URL = "url";
+
+    public static final String WRITE_LOCK = "WRITE_LOCK";
 }

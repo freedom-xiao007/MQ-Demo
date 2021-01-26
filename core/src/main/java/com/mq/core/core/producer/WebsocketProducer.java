@@ -67,8 +67,4 @@ public class WebsocketProducer implements Producer {
         map.put("message", message);
         client.send(gson.toJson(map));
     }
-
-    public void close() {
-        client.close();
-    }
 }

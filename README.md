@@ -90,15 +90,29 @@ Consumer 100000 messages spend time : 167 ms
     - [x] 3）对于每个命名消费者，用指针记录消费位置。
     
 #### 测试记录
-##### 2.1 自定义Queue：悲观读写锁
+生产者和消费者通信方式：
+
 - producer use websocket
 - consumer use http
+
+V1版本中的并发问题倒是解决了，但性能上要稍差一些，但应该属于正常
+
+##### 2.1 自定义Queue：悲观读写锁
+
 
 ```text
 start producer test
 Producer 100000 messages spend time : 477 ms 
 Start consumer test
 Consumer 100000 messages spend time : 420 ms
+```
+
+##### 2.1 自定义Queue：悲观写、自旋锁读
+```text
+start producer test
+Producer 100000 messages spend time : 429 ms 
+Start consumer test
+Consumer 100000 messages spend time : 332 ms
 ```
 
 ### 第三个版本：基于 SpringMVC 实现 MQServer

@@ -42,6 +42,8 @@ public class ExampleApplication {
     private static void startHttpMQConsumer(int messageAmount, String topic, int getRate) {
         Map<String, Object> properties = new HashMap<>(1);
         properties.put("url", "http://localhost:8080");
+        properties.put("topic", topic);
+        properties.put("group", "groupTest");
         Consumer consumer = new HttpConsumer(properties);
         int amount = messageAmount;
 
@@ -49,7 +51,7 @@ public class ExampleApplication {
         long start = System.currentTimeMillis();
 
         while (amount > 0) {
-           amount -= consumer.poll(topic, getRate).size();
+           amount -= consumer.poll(getRate).size();
         }
 
         System.out.println("Consumer " + messageAmount + " messages spend time : " + (System.currentTimeMillis() - start) + " " +
