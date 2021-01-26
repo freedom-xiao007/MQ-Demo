@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.mq.core.core.controller;
+package com.mq.core.core.protocol.controller;
 
 import com.mq.core.core.messagequeue.Broker;
 import com.mq.core.core.messagequeue.Message;

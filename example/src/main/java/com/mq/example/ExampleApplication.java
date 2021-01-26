@@ -16,8 +16,8 @@ public class ExampleApplication {
         String topic = "testTopic";
         int getRate = 10000;
 
-        startHttpMQProducer(messageAmount, topic);
-//        startWebsocketMqProducer(messageAmount, topic);
+//        startHttpMQProducer(messageAmount, topic);
+        startWebsocketMqProducer(messageAmount, topic);
 
         startHttpMQConsumer(messageAmount, topic, getRate);
     }

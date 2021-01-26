@@ -26,10 +26,11 @@
 │  │  │          └─core
 │  │  │              └─core
 │  │  │                  ├─consumer : 消费者API
-│  │  │                  ├─controller : HTTP协议通信
-│  │  │                  ├─messagequeue : Broker，消息队列具体实现
 │  │  │                  ├─producer : 生产者API
-│  │  │                  └─websocket : Websocket协议通信
+│  │  │                  ├─messagequeue : Broker，消息队列具体实现
+│  │  │                  ├─protocol : Broker，消息队列具体实现
+│  │  │                     ├─controller : HTTP协议通信
+│  │  │                     └─websocket : Websocket协议通信
 ```
 
 - example ： 使用示例，并进行相应的测试；使用消息队列API，实现生产和消费
@@ -47,8 +48,8 @@
   
 &ensp;&ensp;&ensp;&ensp;目前使用HTTP作为通信方式
 
-### 相关性能测试记录
-#### v1.0 HTTP
+#### 相关性能测试记录
+##### v1.0 HTTP
 使用队列： ConcurrentLinkedQueue
 性能测试：
 
@@ -62,7 +63,7 @@ jdk.internal.misc.Unsafe.park[native] 占用94%的运行时间
 看着像是网络通信的
 感觉HTTP没有长连接，每次都是新的
 
-#### v1.1 websocket
+##### v1.1 websocket
 测试下面有并发问题，后面需要排除改进
 producer use websocket
 consumer use http
@@ -83,10 +84,17 @@ Consumer 100000 messages spend time : 167 ms
 ```
 
 ### 第二个版本：自定义 Queue
-- [ ] 2、去掉内存Queue，设计自定义Queue，实现消息确认和消费offset
-    - [ ] 1）自定义内存Message数组模拟Queue。
-    - [ ] 2）使用指针记录当前消息写入位置。
-    - [ ] 3）对于每个命名消费者，用指针记录消费位置。
+- [x] 2、去掉内存Queue，设计自定义Queue，实现消息确认和消费offset
+    - [x] 1）自定义内存Message数组模拟Queue。
+    - [x] 2）使用指针记录当前消息写入位置。
+    - [x] 3）对于每个命名消费者，用指针记录消费位置。
+    
+#### 测试记录
+##### 2.1 自定义Queue：悲观读写锁
+start producer test
+Producer 100000 messages spend time : 477 ms 
+Start consumer test
+Consumer 100000 messages spend time : 420 ms
 
 ### 第三个版本：基于 SpringMVC 实现 MQServer
 - [ ] 3、拆分broker和client(包括producer和consumer)

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.mq.core.core.websocket;
+package com.mq.core.core.protocol.websocket;
 
 import com.mq.core.core.messagequeue.Broker;
 import org.springframework.context.annotation.Bean;

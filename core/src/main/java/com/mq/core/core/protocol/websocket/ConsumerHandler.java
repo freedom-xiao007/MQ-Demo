@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.mq.core.core.websocket;
+package com.mq.core.core.protocol.websocket;
 
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.WebSocketHandler;
