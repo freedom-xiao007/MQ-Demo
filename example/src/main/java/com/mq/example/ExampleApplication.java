@@ -16,8 +16,8 @@ public class ExampleApplication {
         String topic = "testTopic";
         int getRate = 10000;
 
-//        startHttpMQProducer(messageAmount);
-        startWebsocketMqProducer(messageAmount, topic);
+        startHttpMQProducer(messageAmount, topic);
+//        startWebsocketMqProducer(messageAmount, topic);
 
         startHttpMQConsumer(messageAmount, topic, getRate);
     }
@@ -56,11 +56,10 @@ public class ExampleApplication {
                 "ms");
     }
 
-    private static void startHttpMQProducer(int messageAmount) {
+    private static void startHttpMQProducer(int messageAmount, String topic) {
         Map<String, Object> properties = new HashMap<>(1);
         properties.put("url", "http://localhost:8080");
         Producer producer = new HttpProducer(properties);
-        String topic = "testTopic";
 
         System.out.println("start producer test");
         long start = System.currentTimeMillis();

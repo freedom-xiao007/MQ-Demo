@@ -3,22 +3,39 @@
 ## 简介
 &ensp;&ensp;&ensp;&ensp;实现消息队列 Demo 程序
 
+## 设计思路
+&ensp;&ensp;&ensp;&ensp;大致的架构图如下：
+
+![](./picture/framework.png)
+
+&ensp;&ensp;&ensp;&ensp;如上图所示，消息队列Dome的总体架构分为三个：
+
+- Broker：消息队列中心，存放着所有数据；接收生产者的数据；发送数据给消费者；等等核心功能
+- 通信协议层：这次是定义生产者、消费者与Broker之间的通信方式，比如HTTP、TCP、Websocket等等，后面会对应进行性能测试
+- 生产者和消费者：提供相应的API给用户进行调用
+
+## 工程结构
+- core ：消息队列功能API实现
+
+```shell script
+├─src
+│  ├─main
+│  │  ├─java
+│  │  │  └─com
+│  │  │      └─mq
+│  │  │          └─core
+│  │  │              └─core
+│  │  │                  ├─consumer : 消费者API
+│  │  │                  ├─controller : HTTP协议通信
+│  │  │                  ├─messagequeue : Broker，消息队列具体实现
+│  │  │                  ├─producer : 生产者API
+│  │  │                  └─websocket : Websocket协议通信
+```
+
+- example ： 使用示例，并进行相应的测试；使用消息队列API，实现生产和消费
+
 ## 程序运行说明
 &ensp;&ensp;&ensp;&ensp;直接运行Example工程下的ExampleApplication即可
-
-## 设计思路
-
-## 程序说明
-- core ：消息队列功能API实现
-- example ： 使用消息队列API，实现生产和消费
-
-### Core工程
-实现内存消息队列
-实现Producer API
-实现Consumer API
-
-### Example工程
-简单的测试用例，看Core是否能进行使用
 
 ## 迭代说明
 ### 第一版：内存 Queue
@@ -30,6 +47,7 @@
   
 &ensp;&ensp;&ensp;&ensp;目前使用HTTP作为通信方式
 
+### 相关性能测试记录
 #### v1.0 HTTP
 使用队列： ConcurrentLinkedQueue
 性能测试：
