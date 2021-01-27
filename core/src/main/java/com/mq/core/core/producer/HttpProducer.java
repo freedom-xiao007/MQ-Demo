@@ -17,6 +17,7 @@
 
 package com.mq.core.core.producer;
 
+import com.mq.core.core.common.Constants;
 import com.mq.core.core.messagequeue.Message;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
@@ -40,10 +41,14 @@ public class HttpProducer implements Producer {
     }
 
     @Override
-    public void send(String topic, String message) {
-        String brokerUrl = properties.get("url").toString() + "/send";
+    public boolean send(String topic, String message) {
+        String url = properties.get(Constants.URL).toString();
+        String brokerUrl = url + "/send";
         HttpEntity<Message> request = new HttpEntity<>(new Message(topic, message));
         ResponseEntity<Boolean> response = restTemplate.postForEntity(brokerUrl, request, Boolean.class);
-        log.info("send response : " + response);
+        if (response.getBody() == null) {
+            return false;
+        }
+        return response.getBody();
     }
 }

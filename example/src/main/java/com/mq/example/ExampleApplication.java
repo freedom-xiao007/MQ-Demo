@@ -1,5 +1,6 @@
 package com.mq.example;
 
+import com.mq.core.core.common.Constants;
 import com.mq.core.core.consumer.Consumer;
 import com.mq.core.core.consumer.HttpConsumer;
 import com.mq.core.core.producer.HttpProducer;
@@ -12,9 +13,9 @@ import java.util.Map;
 public class ExampleApplication {
 
     public static void main(String[] args) throws InterruptedException {
-        int messageAmount = 100000;
+        int messageAmount = 10;
         String topic = "testTopic";
-        int getRate = 10000;
+        int getRate = 10;
 
 //        startHttpMQProducer(messageAmount, topic);
         startWebsocketMqProducer(messageAmount, topic);
@@ -23,7 +24,10 @@ public class ExampleApplication {
     }
 
     private static void startWebsocketMqProducer(int messageAmount, String topic) {
-        Producer producer = new WebsocketProducer("ws://localhost:8080/producer");
+        Map<String, Object> properties = new HashMap<>(1);
+        properties.put(Constants.URL, "ws://localhost:8080/producer");
+        properties.put(Constants.SEND_TIMEOUT, 1000);
+        Producer producer = new WebsocketProducer(properties);
 
         int amount = messageAmount;
 
@@ -31,8 +35,11 @@ public class ExampleApplication {
         long start = System.currentTimeMillis();
 
         while (amount > 0) {
-            producer.send(topic, "producerMessage");
-            amount -= 1;
+            if(producer.send(topic, "producerMessage")) {
+                amount -= 1;
+            } else {
+                System.out.println("send failed");
+            }
         }
 
         System.out.println("Producer " + messageAmount + " messages spend time : " +
@@ -67,7 +74,9 @@ public class ExampleApplication {
         long start = System.currentTimeMillis();
 
         for(int i = 0; i < messageAmount; i++) {
-            producer.send(topic, String.valueOf(i));
+            if (!producer.send(topic, String.valueOf(i))) {
+                System.out.println("send failed");
+            }
         }
 
         System.out.println("Producer " + messageAmount + " messages spend time : " +

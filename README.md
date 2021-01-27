@@ -14,6 +14,12 @@
 - 通信协议层：这次是定义生产者、消费者与Broker之间的通信方式，比如HTTP、TCP、Websocket等等，后面会对应进行性能测试
 - 生产者和消费者：提供相应的API给用户进行调用
 
+&ensp;&ensp;&ensp;&ensp;目前进展：
+
+- 已简单完成第三版本
+- 通信协议：websocket和HTTP
+- 性能：目前急剧下降，正在调整中......
+
 ## 工程结构
 - core ：消息队列功能API实现
 
@@ -116,12 +122,14 @@ Consumer 100000 messages spend time : 332 ms
 ```
 
 ### 第三个版本：基于 SpringMVC 实现 MQServer
-- [ ] 3、拆分broker和client(包括producer和consumer)
-    - [ ] 1）将Queue保存到web server端
-    - [ ] 2）设计消息读写API接口，确认接口，提交offset接口
-    - [ ] 3）producer和consumer通过httpclient访问Queue
-    - [ ] 4）实现消息确认，offset提交
-    - [ ] 5）实现consumer从offset增量拉取
+- [x] 3、拆分broker和client(包括producer和consumer)
+    - [x] 1）将Queue保存到web server端
+    - [x] 2）设计消息读写API接口，确认接口，提交offset接口
+    - [x] 3）producer和consumer通过httpclient访问Queue
+    - [x] 4）实现消息确认，offset提交
+    - [x] 5）实现consumer从offset增量拉取
+    
+websocket producer 已实现上面功能，HTTP还没完善
 
 ### 第四个版本：功能完善 MQ
 - [ ] 4、增加多种策略（各条之间没有关系，可以任意选择实现）

@@ -15,18 +15,31 @@
  * limitations under the License.
  */
 
-package com.mq.core.core.producer;
+package com.mq.core.core.common;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 /**
  * @author lw1243925457
  */
-public interface Producer {
+public class UUIDUtil {
 
-    /**
-     * Send message to broker
-     * @param topic topic
-     * @param message message
-     * @return send success
-     */
-    boolean send(String topic, String message);
+    private static String localHost = null;
+
+    public static String getUUID() {
+        if (localHost == null) {
+            localHost = getLocalHost();
+        }
+        return localHost + System.currentTimeMillis();
+    }
+
+    private static String getLocalHost() {
+        try {
+            return InetAddress.getLocalHost().getHostAddress();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
